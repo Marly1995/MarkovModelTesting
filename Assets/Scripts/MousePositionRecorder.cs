@@ -9,6 +9,9 @@ using Accord.Statistics.Models.Markov.Learning;
 using Accord.Statistics.Distributions.Fitting;
 using Accord.Statistics.Distributions.Multivariate;
 
+using System;
+using System.ComponentModel;
+using System.Linq;
 
 public class MousePositionRecorder : MonoBehaviour
 {
@@ -16,7 +19,7 @@ public class MousePositionRecorder : MonoBehaviour
     List<double[][]> storedGestures;
     bool _isRecording;
 
-    HiddenMarkovClassifier<MultivariateNormalDistribution> hmm;
+    HiddenMarkovClassifier<MultivariateNormalDistribution, double[]> hmm;
     ITopology vector;
 
 	void Start ()
@@ -27,21 +30,17 @@ public class MousePositionRecorder : MonoBehaviour
 	
     void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             BeginRecording();
         }
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetKeyUp(KeyCode.Space))
         {
             EndRecording();
         }
         if (Input.GetMouseButtonDown(1))
         {
             CheckRecognized(mousePositions);
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StoreGesture(mousePositions);
         }
         if (Input.GetKeyDown(KeyCode.L))
         {
@@ -95,12 +94,17 @@ public class MousePositionRecorder : MonoBehaviour
             outputs[i] = 0;
         }
 
-        hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution>(5,
-                new Forward(5), new MultivariateNormalDistribution(3));
+        int states = 5;
+        List<String> classes = new List<String>();
 
-        var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution>(hmm,
+        MultivariateNormalDistribution dist = new MultivariateNormalDistribution(3);
 
-            i => new BaumWelchLearning<MultivariateNormalDistribution>(hmm.Models[i])
+        hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution, double[]>
+            (states, new Forward(states), new MultivariateNormalDistribution(3));
+
+        var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution, double[]>(hmm)
+        {
+            Learner = i => new BaumWelchLearning<MultivariateNormalDistribution, double[]>(hmm.Models[i])
             {
                 Tolerance = 0.01,
                 MaxIterations = 1,
@@ -110,12 +114,12 @@ public class MousePositionRecorder : MonoBehaviour
                     Regularization = 1e-5
                 }
             }
-        );
+        };
 
         teacher.Empirical = true;
         teacher.Rejection = false;
 
-        double error = teacher.Run(inputs, outputs);
+        teacher.Learn(inputs, outputs);
 
         storedGestures.Clear();
 
@@ -132,7 +136,7 @@ public class MousePositionRecorder : MonoBehaviour
             points[i] = new double[3] { positions[i].x, positions[i].y, positions[i].z };
         }
 
-        Debug.Log(Mathf.Exp((float)hmm.Models[0].Evaluate(points)));
-        Debug.Log(hmm.Compute(points));
+        Debug.Log(hmm.Models[0].LogLikelihood(points));
+        Debug.Log(hmm.Decide(points));
     }
 }
