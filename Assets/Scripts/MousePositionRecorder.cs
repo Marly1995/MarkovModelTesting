@@ -96,12 +96,14 @@ public class MousePositionRecorder : MonoBehaviour
         _isRecording = true;
         index = 0;
         line.ResetPositions();
+        line.ResetHeightCurve();
     }
 
     void EndRecording()
     {
         Debug.Log("Recording Ended!");
         _isRecording = false;
+        line.ApplyHeightCurve();
     }
 
     void StoreGesture(List<Vector3> positions, string name)
