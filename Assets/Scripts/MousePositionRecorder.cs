@@ -34,8 +34,7 @@ public class MousePositionRecorder : MonoBehaviour
 
     HiddenMarkovClassifier<MultivariateNormalDistribution, double[]> hmm;
     ITopology vector;
-
-    private LineTracer line;
+    
     private int index;
 
     public string databaseFile;
@@ -43,7 +42,6 @@ public class MousePositionRecorder : MonoBehaviour
 
     void Start ()
     {
-        line = GetComponent<LineTracer>();
         database = GetComponent<GestureDatabase>();
 
         mousePositions = new List<Vector3>();
@@ -53,8 +51,8 @@ public class MousePositionRecorder : MonoBehaviour
         StoreGestureBtn.onClick.AddListener(() => StoreGesture(mousePositions, nameInputField.text));
         LearnGesturesBtn.onClick.AddListener(() => LearnGesture());
         PredictGestureBtn.onClick.AddListener(() => CheckRecognized(mousePositions));
-        SaveGesturesBtn.onClick.AddListener(() => SaveDatabase());
-        LoadGesturesBtn.onClick.AddListener(() => LoadDatabase());
+        //SaveGesturesBtn.onClick.AddListener(() => SaveDatabase());
+        //LoadGesturesBtn.onClick.AddListener(() => LoadDatabase());
 	}
 	
     void HandleInput()
@@ -67,14 +65,18 @@ public class MousePositionRecorder : MonoBehaviour
         {
             EndRecording();
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            CheckRecognized(mousePositions);
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            LearnGesture();
-        }
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        //    CheckRecognized(mousePositions);
+        //}
+        //if (Input.GetMouseButtonDown(2))
+        //{
+        //    StoreGesture(mousePositions, nameInputField.text);
+        //}
+        //if (Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    LearnGesture();
+        //}
     }
 
 	void Update ()
@@ -84,26 +86,22 @@ public class MousePositionRecorder : MonoBehaviour
         if (_isRecording)
         {
             mousePositions.Add(transform.position);
-            line.SetPosition(transform.position, index);
             index++;
         }
 	}
 
-    void BeginRecording()
+    public void BeginRecording()
     {
         Debug.Log("Recording Begun!");
         mousePositions.Clear();
         _isRecording = true;
         index = 0;
-        line.ResetPositions();
-        line.ResetHeightCurve();
     }
 
-    void EndRecording()
+    public void EndRecording()
     {
         Debug.Log("Recording Ended!");
         _isRecording = false;
-        line.ApplyHeightCurve();
     }
 
     void StoreGesture(List<Vector3> positions, string name)
