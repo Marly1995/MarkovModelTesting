@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -444,7 +444,7 @@ MonoBehaviour:
   LoadGesturesBtn: {fileID: 298788757}
   nameInputField: {fileID: 1664514952}
   text: {fileID: 2102966016}
-  databaseFile: C:\Users\Computing\Documents\GitHub\MarkovModelTesting\Assets\numbers
+  databaseFile: \Documents\GitHub\MarkovModelTesting\Assets\numbersing\Assets\numbers
 --- !u!81 &322053853
 AudioListener:
   m_ObjectHideFlags: 0

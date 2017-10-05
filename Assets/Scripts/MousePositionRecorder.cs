@@ -83,8 +83,8 @@ public class MousePositionRecorder : MonoBehaviour
 
         if (_isRecording)
         {
-            mousePositions.Add(Input.mousePosition);
-            line.SetPosition(Input.mousePosition, index);
+            mousePositions.Add(transform.position);
+            line.SetPosition(transform.position, index);
             index++;
         }
 	}

@@ -33,7 +33,6 @@ public class LineTracer : MonoBehaviour {
     public void SetPosition(Vector3 pos, int index)
     {
         Vector3 cPos = Camera.main.ScreenToWorldPoint(pos);
-        cPos.z = 0;
         points.Add(cPos);
         line.positionCount = points.Count;
         line.SetPosition(points.Count - 1, points[points.Count - 1]);
