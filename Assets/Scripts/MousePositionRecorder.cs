@@ -40,8 +40,12 @@ public class MousePositionRecorder : MonoBehaviour
     public string databaseFile;
     private GestureDatabase database;
 
+    LineTracer trail;
+
     void Start ()
     {
+        trail = GetComponent<LineTracer>();
+
         database = GetComponent<GestureDatabase>();
 
         mousePositions = new List<Vector3>();
@@ -96,12 +100,14 @@ public class MousePositionRecorder : MonoBehaviour
         mousePositions.Clear();
         _isRecording = true;
         index = 0;
+        trail.BeginTrail();
     }
 
     public void EndRecording()
     {
         Debug.Log("Recording Ended!");
         _isRecording = false;
+        trail.EndTrail();
     }
 
     void StoreGesture(List<Vector3> positions, string name)
