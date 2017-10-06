@@ -55,8 +55,8 @@ public class MousePositionRecorder : MonoBehaviour
         StoreGestureBtn.onClick.AddListener(() => StoreGesture(mousePositions, nameInputField.text));
         LearnGesturesBtn.onClick.AddListener(() => LearnGesture());
         PredictGestureBtn.onClick.AddListener(() => CheckRecognized(mousePositions));
-        //SaveGesturesBtn.onClick.AddListener(() => SaveDatabase());
-        //LoadGesturesBtn.onClick.AddListener(() => LoadDatabase());
+        SaveGesturesBtn.onClick.AddListener(() => SaveDatabase());
+        LoadGesturesBtn.onClick.AddListener(() => LoadDatabase());
 	}
 	
     void HandleInput()
