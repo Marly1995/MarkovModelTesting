@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 
 using Accord.Statistics.Models.Markov;
 using Accord.Statistics.Models.Markov.Topology;
@@ -23,11 +24,21 @@ public class MousePositionRecorder : MonoBehaviour
     public Button PredictGestureBtn;
     public Button SaveGesturesBtn;
     public Button LoadGesturesBtn;
-    
     public InputField nameInputField;
     public Text text;
 
-    List<Vector3> mousePositions;
+    [Space]
+    public int valuesTracked;
+    
+    [Space]
+    public Transform leftHand;
+    public Transform rightHand;
+
+    List<Vector3> rightHandPositions;
+    List<Vector3> leftHandPositions;
+    List<Vector3> rightHandRotations;
+    List<Vector3> leftHandRotations;
+
     List<Gesture> storedGestures;
     Dictionary<string, int> gestureIndex;
     bool _isRecording;
@@ -48,39 +59,20 @@ public class MousePositionRecorder : MonoBehaviour
 
         database = GetComponent<GestureDatabase>();
 
-        mousePositions = new List<Vector3>();
+        rightHandPositions = new List<Vector3>();
         storedGestures = new List<Gesture>();
         gestureIndex = new Dictionary<string, int>();
 
-        StoreGestureBtn.onClick.AddListener(() => StoreGesture(mousePositions, nameInputField.text));
+        StoreGestureBtn.onClick.AddListener(() => StoreGesture(nameInputField.text));
         LearnGesturesBtn.onClick.AddListener(() => LearnGesture());
-        PredictGestureBtn.onClick.AddListener(() => CheckRecognized(mousePositions));
+        PredictGestureBtn.onClick.AddListener(() => CheckRecognized(rightHandPositions));
         SaveGesturesBtn.onClick.AddListener(() => SaveDatabase());
         LoadGesturesBtn.onClick.AddListener(() => LoadDatabase());
 	}
 	
     void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            BeginRecording();
-        }
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            EndRecording();
-        }
-        //if (Input.GetMouseButtonDown(1))
-        //{
-        //    CheckRecognized(mousePositions);
-        //}
-        //if (Input.GetMouseButtonDown(2))
-        //{
-        //    StoreGesture(mousePositions, nameInputField.text);
-        //}
-        //if (Input.GetKeyDown(KeyCode.Return))
-        //{
-        //    LearnGesture();
-        //}
+
     }
 
 	void Update ()
@@ -89,7 +81,10 @@ public class MousePositionRecorder : MonoBehaviour
 
         if (_isRecording)
         {
-            mousePositions.Add(transform.position);
+            rightHandPositions.Add(rightHand.position);
+            leftHandPositions.Add(leftHand.position);
+            rightHandRotations.Add(rightHand.rotation.eulerAngles);
+            leftHandRotations.Add(leftHand.rotation.eulerAngles);
             index++;
         }
 	}
@@ -97,7 +92,7 @@ public class MousePositionRecorder : MonoBehaviour
     public void BeginRecording()
     {
         Debug.Log("Recording Begun!");
-        mousePositions.Clear();
+        rightHandPositions.Clear();
         _isRecording = true;
         index = 0;
         trail.BeginTrail();
@@ -110,12 +105,33 @@ public class MousePositionRecorder : MonoBehaviour
         trail.EndTrail();
     }
 
-    void StoreGesture(List<Vector3> positions, string name)
+    void StoreGesture(string name)
     {
-        double[][] points = new double[positions.Count][];
-        for (int i = 0; i < positions.Count; i++)
+        double[][] points = new double[rightHandPositions.Count][];
+        switch(valuesTracked)
         {
-            points[i] = new double[3] { positions[i].x, positions[i].y, positions[i].z };
+            case 3:
+                for (int i = 0; i < rightHandPositions.Count; i++)
+                {
+                    points[i] = new double[3] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z };
+                }
+                break;
+            case 6:
+                for (int i = 0; i < rightHandPositions.Count; i++)
+                {
+                    points[i] = new double[6] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z,
+                                                rightHandRotations[i].x, rightHandRotations[i].y, rightHandRotations[i].z };
+                }
+                break;
+            case 12:
+                for (int i = 0; i < rightHandPositions.Count; i++)
+                {
+                    points[i] = new double[12] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z,
+                                                 rightHandRotations[i].x, rightHandRotations[i].y, rightHandRotations[i].z,
+                                                 leftHandPositions[i].x, leftHandPositions[i].y, leftHandPositions[i].z,
+                                                 leftHandRotations[i].x, leftHandRotations[i].y, leftHandRotations[i].z };
+                }
+                break;
         }
         if (!gestureIndex.ContainsKey(name))
         {
@@ -139,12 +155,12 @@ public class MousePositionRecorder : MonoBehaviour
 
         List<String> classes = new List<String>();
 
-        int states = 10;
+        int states = gestureIndex.Count;
 
         MultivariateNormalDistribution dist = new MultivariateNormalDistribution(3);
 
         hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution, double[]>
-            (9, new Forward(14), new MultivariateNormalDistribution(3));
+            (states, new Forward(14), new MultivariateNormalDistribution(valuesTracked));
 
         var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution, double[]>(hmm)
         {

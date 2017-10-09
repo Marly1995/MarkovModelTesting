@@ -2,57 +2,41 @@
 using System.Collections;
 public class SteamVrControllerManager : MonoBehaviour
 {
-    public bool triggerButtonDown = false;
-
     private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
-
     MousePositionRecorder rec;
 
-    private SteamVR_Controller.Device controller
+    private SteamVR_Controller.Device Controller
     {
-
         get
         {
             return SteamVR_Controller.Input((int)trackedObj.index);
-
         }
-
     }
 
     private SteamVR_TrackedObject trackedObj;
 
     void Start()
     {
-
         trackedObj = GetComponent<SteamVR_TrackedObject>();
         rec = GetComponent<MousePositionRecorder>();
     }
 
     void Update()
     {
-
-        if (controller == null)
+        if (Controller == null)
         {
-
             Debug.Log("Controller not initialized");
-
             return;
-
         }
 
-        if (controller.GetPressDown(triggerButton))
+        if (Controller.GetPressDown(triggerButton))
         {
-
             rec.BeginRecording();
-
         }
-        if (controller.GetPressUp(triggerButton))
+        if (Controller.GetPressUp(triggerButton))
         {
-
             rec.EndRecording();
 
         }
-
     }
-
 }
