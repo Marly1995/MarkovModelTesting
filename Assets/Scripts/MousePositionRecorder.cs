@@ -60,6 +60,10 @@ public class MousePositionRecorder : MonoBehaviour
         database = GetComponent<GestureDatabase>();
 
         rightHandPositions = new List<Vector3>();
+        leftHandPositions = new List<Vector3>();
+        rightHandRotations = new List<Vector3>();
+        leftHandRotations = new List<Vector3>();
+
         storedGestures = new List<Gesture>();
         gestureIndex = new Dictionary<string, int>();
 
@@ -189,11 +193,32 @@ public class MousePositionRecorder : MonoBehaviour
         Debug.Log("Checking sequence!");
 
         double[][] points = new double[positions.Count][];
-        for (int i = 0; i < positions.Count; i++)
+        switch (valuesTracked)
         {
-            points[i] = new double[3] { positions[i].x, positions[i].y, positions[i].z };
+            case 3:
+                for (int i = 0; i < rightHandPositions.Count; i++)
+                {
+                    points[i] = new double[3] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z };
+                }
+                break;
+            case 6:
+                for (int i = 0; i < rightHandPositions.Count; i++)
+                {
+                    points[i] = new double[6] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z,
+                                                rightHandRotations[i].x, rightHandRotations[i].y, rightHandRotations[i].z };
+                }
+                break;
+            case 12:
+                for (int i = 0; i < rightHandPositions.Count; i++)
+                {
+                    points[i] = new double[12] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z,
+                                                 rightHandRotations[i].x, rightHandRotations[i].y, rightHandRotations[i].z,
+                                                 leftHandPositions[i].x, leftHandPositions[i].y, leftHandPositions[i].z,
+                                                 leftHandRotations[i].x, leftHandRotations[i].y, leftHandRotations[i].z };
+                }
+                break;
         }
-        
+
         int decision = hmm.Decide(points);
         string value = string.Empty;
         foreach (KeyValuePair<string, int> item in gestureIndex)
