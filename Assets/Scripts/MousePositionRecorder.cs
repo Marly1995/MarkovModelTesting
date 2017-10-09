@@ -53,6 +53,9 @@ public class MousePositionRecorder : MonoBehaviour
 
     LineTracer trail;
 
+    [Space]
+    public CharacterAnimator animator;
+
     void Start ()
     {
         trail = GetComponent<LineTracer>();
@@ -229,6 +232,14 @@ public class MousePositionRecorder : MonoBehaviour
         text.text = value;
         nameInputField.text = value;
         Debug.Log("Did you write a: " + value + "?");
+
+        foreach(Gesture gesture in storedGestures)
+        {
+            if (gesture.name == value)
+            {
+                animator.BeginAnimation(gesture.points);
+            }
+        }
     }
 
     void SaveDatabase()
