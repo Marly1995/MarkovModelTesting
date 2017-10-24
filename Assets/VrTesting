@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <ArrayOfGesture xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Gesture>
-    <points>
-      <ArrayOfDouble>
-        <double>-0.010694429278373718</double>
+    <points />
+    <name />
+    <index>0</index>
+  </Gesture>
+</ArrayOfGesture>
         <double>-0.022305905818939209</double>
         <double>-0.71075689792633057</double>
       </ArrayOfDouble>

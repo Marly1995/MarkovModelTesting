@@ -2,6 +2,7 @@
 using System.Collections;
 public class SteamVrControllerManager : MonoBehaviour
 {
+    private Valve.VR.EVRButtonId downPadButton = Valve.VR.EVRButtonId.k_EButton_Grip;
     private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
     MousePositionRecorder rec;
 
@@ -36,7 +37,10 @@ public class SteamVrControllerManager : MonoBehaviour
         if (Controller.GetPressUp(triggerButton))
         {
             rec.EndRecording();
-
+        }
+        if (Controller.GetPressDown(downPadButton))
+        {
+            rec.StoreGesture();
         }
     }
 }

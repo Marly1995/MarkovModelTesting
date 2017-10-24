@@ -51,15 +51,15 @@ public class MousePositionRecorder : MonoBehaviour
     public string databaseFile;
     private GestureDatabase database;
 
-    LineTracer trail;
+    public ControllerTrail leftTrail;
+    [Space]
+    public ControllerTrail rightTrail;
 
     [Space]
     public CharacterAnimator animator;
 
     void Start ()
     {
-        trail = GetComponent<LineTracer>();
-
         database = GetComponent<GestureDatabase>();
 
         rightHandPositions = new List<Vector3>();
@@ -70,22 +70,15 @@ public class MousePositionRecorder : MonoBehaviour
         storedGestures = new List<Gesture>();
         gestureIndex = new Dictionary<string, int>();
 
-        StoreGestureBtn.onClick.AddListener(() => StoreGesture(nameInputField.text));
+        StoreGestureBtn.onClick.AddListener(() => StoreGesture());
         LearnGesturesBtn.onClick.AddListener(() => LearnGesture());
         PredictGestureBtn.onClick.AddListener(() => CheckRecognized(rightHandPositions));
         SaveGesturesBtn.onClick.AddListener(() => SaveDatabase());
         LoadGesturesBtn.onClick.AddListener(() => LoadDatabase());
 	}
-	
-    void HandleInput()
-    {
-
-    }
 
 	void Update ()
     {
-        HandleInput();
-
         if (_isRecording)
         {
             rightHandPositions.Add(rightHand.position);
@@ -102,17 +95,19 @@ public class MousePositionRecorder : MonoBehaviour
         rightHandPositions.Clear();
         _isRecording = true;
         index = 0;
-        trail.BeginTrail();
+        leftTrail.StartTrailing();
+        rightTrail.StartTrailing();
     }
 
     public void EndRecording()
     {
         Debug.Log("Recording Ended!");
         _isRecording = false;
-        trail.EndTrail();
+        leftTrail.StopTrailing();
+        rightTrail.StopTrailing();
     }
 
-    void StoreGesture(string name)
+    public void StoreGesture()
     {
         double[][] points = new double[rightHandPositions.Count][];
         switch(valuesTracked)
@@ -140,13 +135,13 @@ public class MousePositionRecorder : MonoBehaviour
                 }
                 break;
         }
-        if (!gestureIndex.ContainsKey(name))
+        if (!gestureIndex.ContainsKey(nameInputField.text))
         {
-            gestureIndex.Add(name, gestureIndex.Count);
+            gestureIndex.Add(nameInputField.text, gestureIndex.Count);
         }
-        Gesture gesture = new Gesture(points, name, gestureIndex[name]);
+        Gesture gesture = new Gesture(points, nameInputField.text, gestureIndex[nameInputField.text]);
         storedGestures.Add(gesture);
-        Debug.Log("Gesture Recorded as: " + name);
+        Debug.Log("Gesture Recorded as: " + nameInputField.text);
     }
 
     void LearnGesture()
