@@ -159,7 +159,7 @@ public class MousePositionRecorder : MonoBehaviour
 
         int states = gestureIndex.Count;
 
-        MultivariateNormalDistribution dist = new MultivariateNormalDistribution(3);
+        MultivariateNormalDistribution dist = new MultivariateNormalDistribution(12);
 
         hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution, double[]>
             (states, new Forward(14), new MultivariateNormalDistribution(valuesTracked));
@@ -232,7 +232,7 @@ public class MousePositionRecorder : MonoBehaviour
         {
             if (gesture.name == value)
             {
-                animator.BeginAnimation(gesture.points);
+                //animator.BeginAnimation(gesture.points);
             }
         }
     }

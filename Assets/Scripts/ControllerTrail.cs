@@ -11,6 +11,7 @@ public class ControllerTrail : MonoBehaviour {
     {
         parent = transform.parent;
         trail = GetComponent<TrailRenderer>();
+        StopTrailing();
     }
     
     public void StopTrailing()
