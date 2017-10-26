@@ -29,6 +29,8 @@ public class MousePositionRecorder : MonoBehaviour
 
     [Space]
     public int valuesTracked;
+    public int statesUsed;
+    public int mode;
     
     [Space]
     public Transform leftHand;
@@ -110,7 +112,7 @@ public class MousePositionRecorder : MonoBehaviour
     public void StoreGesture()
     {
         double[][] points = new double[rightHandPositions.Count][];
-        switch(valuesTracked)
+        switch(mode)
         {
             case 3:
                 for (int i = 0; i < rightHandPositions.Count; i++)
@@ -125,7 +127,14 @@ public class MousePositionRecorder : MonoBehaviour
                                                 rightHandRotations[i].x, rightHandRotations[i].y, rightHandRotations[i].z };
                 }
                 break;
-            case 12:
+            case 33:
+                for (int i = 0; i < rightHandPositions.Count; i++)
+                {
+                    points[i] = new double[6] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z,
+                                                leftHandPositions[i].x, leftHandPositions[i].y, leftHandPositions[i].z };
+                }
+                break;
+            case 66:
                 for (int i = 0; i < rightHandPositions.Count; i++)
                 {
                     points[i] = new double[12] { rightHandPositions[i].x, rightHandPositions[i].y, rightHandPositions[i].z,
@@ -151,7 +160,18 @@ public class MousePositionRecorder : MonoBehaviour
 
         for (int i = 0; i < inputs.Length; i++)
         {
-            inputs[i] = storedGestures[i].points;
+            double[][] atemp = new double[storedGestures[i].points.Length][];
+            for (int j = 0; j < storedGestures[i].points.Length; j++)
+            {
+                double[] btemp = new double[valuesTracked];
+                for (int k = 0; k < valuesTracked; k++)
+                {
+                    btemp[k] = storedGestures[i].points[j][k];
+                }
+                atemp[j] = btemp;
+            }
+
+            inputs[i] = atemp;
             outputs[i] = storedGestures[i].index;
         }
 
@@ -159,10 +179,10 @@ public class MousePositionRecorder : MonoBehaviour
 
         int states = gestureIndex.Count;
 
-        MultivariateNormalDistribution dist = new MultivariateNormalDistribution(12);
+        MultivariateNormalDistribution dist = new MultivariateNormalDistribution(valuesTracked);
 
         hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution, double[]>
-            (states, new Forward(14), new MultivariateNormalDistribution(valuesTracked));
+            (states, new Forward(statesUsed), dist);
 
         var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution, double[]>(hmm)
         {
