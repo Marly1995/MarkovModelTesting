@@ -41,8 +41,8 @@ public class MousePositionRecorder : MonoBehaviour
     List<Vector3> rightHandRotations;
     List<Vector3> leftHandRotations;
 
-    List<Gesture> storedGestures;
-    Dictionary<string, int> gestureIndex;
+    public List<Gesture> storedGestures;
+    public Dictionary<string, int> gestureIndex;
     bool _isRecording;
 
     HiddenMarkovClassifier<MultivariateNormalDistribution, double[]> hmm;
@@ -206,7 +206,60 @@ public class MousePositionRecorder : MonoBehaviour
         Debug.Log("Sequence Learned!");
     }
 
-    void CheckRecognized(List<Vector3> positions)
+    public void LearnGesture(int valuesUsed, int statesUsed)
+    {
+        double[][][] inputs = new double[20][][];
+        int[] outputs = new int[20];
+
+        for (int i = 0; i < 20; i++)
+        {
+            double[][] atemp = new double[storedGestures[i].points.Length][];
+            for (int j = 0; j < storedGestures[i].points.Length; j++)
+            {
+                double[] btemp = new double[valuesUsed];
+                for (int k = 0; k < valuesUsed; k++)
+                {
+                    btemp[k] = storedGestures[i].points[j][k];
+                }
+                atemp[j] = btemp;
+            }
+
+            inputs[i] = atemp;
+            outputs[i] = storedGestures[i].index;
+        }
+
+        List<String> classes = new List<String>();
+
+        int states = gestureIndex.Count;
+
+        MultivariateNormalDistribution dist = new MultivariateNormalDistribution(valuesUsed);
+
+        hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution, double[]>
+            (states, new Forward(statesUsed), dist);
+
+        var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution, double[]>(hmm)
+        {
+            Learner = i => new BaumWelchLearning<MultivariateNormalDistribution, double[]>(hmm.Models[i])
+            {
+                Tolerance = 0.01,
+                MaxIterations = 1,
+
+                FittingOptions = new NormalOptions()
+                {
+                    Regularization = 1e-5
+                }
+            }
+        };
+
+        teacher.Empirical = true;
+        teacher.Rejection = false;
+
+        teacher.Learn(inputs, outputs);
+
+        Debug.Log("Sequence Learned!");
+    }
+
+    public void CheckRecognized(List<Vector3> positions)
     {
         Debug.Log("Checking sequence!");
 
@@ -257,6 +310,58 @@ public class MousePositionRecorder : MonoBehaviour
         }
     }
 
+    public string CheckRecognized(double[][] positions, int valuesUsed)
+    {
+        Debug.Log("Checking sequence!");
+
+        double[][] points = new double[positions.Length][];
+
+        switch (valuesUsed)
+        {
+            case 3:
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    points[i] = new double[3] { positions[i][0], positions[i][1], positions[i][2] };
+                }
+                break;
+            case 33:
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    points[i] = new double[6] { positions[i][0], positions[i][1], positions[i][2],
+                                                positions[i][6], positions[i][7], positions[i][8] };
+                }
+                break;
+            case 6:
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    points[i] = new double[6] { positions[i][0], positions[i][1], positions[i][2],
+                                                positions[i][3], positions[i][4], positions[i][5] };
+                }
+                break;
+            case 66:
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    points[i] = new double[12] { positions[i][0], positions[i][1], positions[i][2],
+                                                 positions[i][3], positions[i][4], positions[i][5],
+                                                 positions[i][6], positions[i][7], positions[i][8],
+                                                 positions[i][9], positions[i][10], positions[i][11] };
+                }
+                break;
+        }
+
+        int decision = hmm.Decide(points);
+        string value = string.Empty;
+        foreach (KeyValuePair<string, int> item in gestureIndex)
+        {
+            if (item.Value == decision)
+            { value = item.Key; }
+        }
+        text.text = value;
+        nameInputField.text = value;
+        Debug.Log("Did you write a: " + value + "?");
+        return value;
+    }
+
     void SaveDatabase()
     {
         database.CheckDatabaseExists(databaseFile);
@@ -267,7 +372,7 @@ public class MousePositionRecorder : MonoBehaviour
         Debug.Log("Database Saved!");
     }
 
-    void LoadDatabase()
+    public void LoadDatabase()
     {
         database.CheckDatabaseExists(databaseFile);
         var stream = new FileStream(databaseFile, FileMode.Open);
@@ -278,7 +383,18 @@ public class MousePositionRecorder : MonoBehaviour
             gestureIndex[storedGestures[i].name] = storedGestures[i].index;
         }
         stream.Close();
-        Debug.Log("Database Loaded!");
+        Debug.Log("Gesture Database Loaded!");
+    }
+
+    public List<Gesture> LoadDatabase(string name)
+    {
+        database.CheckDatabaseExists(name);
+        var stream = new FileStream(name, FileMode.Open);
+        database.Load(stream);
+        List<Gesture> gestures = database.Gestures.ToList();
+        stream.Close();
+        Debug.Log("Test Case Database Loaded!");
+        return gestures;
     }
 }
 
