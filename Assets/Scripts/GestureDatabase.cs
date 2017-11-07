@@ -11,7 +11,7 @@ public class GestureDatabase : MonoBehaviour
 
     public BindingList<Gesture> Gestures;
     
-	void Start ()
+	void Awake ()
     {
         Gestures = new BindingList<Gesture>();
     }
@@ -27,6 +27,7 @@ public class GestureDatabase : MonoBehaviour
         var serializer = new XmlSerializer(typeof(BindingList<Gesture>));
         var samples = (BindingList<Gesture>)serializer.Deserialize(stream);
 
+        Gestures = new BindingList<Gesture>();
         Gestures.Clear();
         foreach (Gesture sample in samples)
         {

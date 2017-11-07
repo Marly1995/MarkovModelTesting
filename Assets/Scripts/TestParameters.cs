@@ -53,16 +53,16 @@ public class TestParameters : MonoBehaviour
                 for (int k = 0; k < tempGestures.Count; k++)
                 {
                     string str = gestureManager.CheckRecognized(tempGestures[k].points, valuesUsed);
-                    MarlonsLegitLogger.Instance.Log(" [Acctual]: " + gestures[j] + "[Predicted]: " + str);
+                    //MarlonsLegitLogger.Instance.Log(" [Acctual]: " + gestures[j] + "[Predicted]: " + str);
                     if (gestures[j] == str)
                     { correct++; }
                     else { wrong++; }
                 }
-                MarlonsLegitLogger.Instance.Log("[Correct]: " + correct + "[Wrong]: " + wrong + "[Accuracy]: " + (correct / gestures.Length));
+                MarlonsLegitLogger.Instance.Log("[Correct]: " + correct + "[Wrong]: " + wrong + "[Accuracy]: " + (correct / (correct+wrong)));
                 globalCorrect += correct;
                 globalWrong += wrong;
             }
-            MarlonsLegitLogger.Instance.Log("[Total Correct]: " + globalCorrect + "[Total Wrong]: " + globalWrong + "[Accuracy]: " + (globalCorrect / gestures.Length));
+            MarlonsLegitLogger.Instance.Log("[Total Correct]: " + globalCorrect + "[Total Wrong]: " + globalWrong + "[Accuracy]: " + (globalCorrect / (globalCorrect+globalWrong)));
         }
     }
 }

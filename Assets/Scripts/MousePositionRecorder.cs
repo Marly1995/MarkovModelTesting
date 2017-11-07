@@ -51,7 +51,7 @@ public class MousePositionRecorder : MonoBehaviour
     private int index;
 
     public string databaseFile;
-    private GestureDatabase database;
+    public GestureDatabase database;
 
     public ControllerTrail leftTrail;
     [Space]
@@ -62,7 +62,6 @@ public class MousePositionRecorder : MonoBehaviour
 
     void Start ()
     {
-        database = GetComponent<GestureDatabase>();
 
         rightHandPositions = new List<Vector3>();
         leftHandPositions = new List<Vector3>();
@@ -208,10 +207,10 @@ public class MousePositionRecorder : MonoBehaviour
 
     public void LearnGesture(int valuesUsed, int statesUsed)
     {
-        double[][][] inputs = new double[20][][];
-        int[] outputs = new int[20];
+        double[][][] inputs = new double[storedGestures.Count][][];
+        int[] outputs = new int[storedGestures.Count];
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < inputs.Length; i++)
         {
             double[][] atemp = new double[storedGestures[i].points.Length][];
             for (int j = 0; j < storedGestures[i].points.Length; j++)
@@ -378,6 +377,7 @@ public class MousePositionRecorder : MonoBehaviour
         var stream = new FileStream(databaseFile, FileMode.Open);
         database.Load(stream);
         storedGestures = database.Gestures.ToList();
+        gestureIndex = new Dictionary<string, int>();
         for (int i = 0; i < storedGestures.Count; i++)
         {
             gestureIndex[storedGestures[i].name] = storedGestures[i].index;

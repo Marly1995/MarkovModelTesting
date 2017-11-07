@@ -67,6 +67,7 @@ public class MarlonsLegitLogger
 
     private void WriteLog(string text)
     {
+        message = string.Empty;
         if (addTimestamp)
         { message = System.DateTime.Now.ToShortTimeString(); }
         message += text;
@@ -78,7 +79,7 @@ public class MarlonsLegitLogger
 
     public void CreateStream()
     {
-        if (stream == null)
+        if (stream != null)
         { stream.Close(); }
         if (fileLocation != null && fileName != null)
         { stream = new StreamWriter(fileLocation + fileName); }
