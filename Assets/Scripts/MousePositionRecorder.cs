@@ -82,10 +82,10 @@ public class MousePositionRecorder : MonoBehaviour
     {
         if (_isRecording)
         {
-            rightHandPositions.Add(rightHand.position);
-            leftHandPositions.Add(leftHand.position);
-            rightHandRotations.Add(rightHand.rotation.eulerAngles);
-            leftHandRotations.Add(leftHand.rotation.eulerAngles);
+            rightHandPositions.Add(rightHand.localPosition);
+            leftHandPositions.Add(leftHand.localPosition);
+            rightHandRotations.Add(rightHand.localEulerAngles);
+            leftHandRotations.Add(leftHand.localEulerAngles);
             index++;
         }
 	}
@@ -94,6 +94,9 @@ public class MousePositionRecorder : MonoBehaviour
     {
         Debug.Log("Recording Begun!");
         rightHandPositions.Clear();
+        leftHandPositions.Clear();
+        rightHandRotations.Clear();
+        leftHandRotations.Clear();
         _isRecording = true;
         index = 0;
         leftTrail.StartTrailing();
@@ -187,8 +190,8 @@ public class MousePositionRecorder : MonoBehaviour
         {
             Learner = i => new BaumWelchLearning<MultivariateNormalDistribution, double[]>(hmm.Models[i])
             {
-                Tolerance = 0.01,
-                MaxIterations = 1,
+                Tolerance = 0.001,
+                MaxIterations = 0,
 
                 FittingOptions = new NormalOptions()
                 {
@@ -241,7 +244,7 @@ public class MousePositionRecorder : MonoBehaviour
             Learner = i => new BaumWelchLearning<MultivariateNormalDistribution, double[]>(hmm.Models[i])
             {
                 Tolerance = 0.01,
-                MaxIterations = 1,
+                MaxIterations = 0,
 
                 FittingOptions = new NormalOptions()
                 {
@@ -349,6 +352,7 @@ public class MousePositionRecorder : MonoBehaviour
         }
 
         int decision = hmm.Decide(points);
+        Debug.Log(decision);
         string value = string.Empty;
         foreach (KeyValuePair<string, int> item in gestureIndex)
         {
