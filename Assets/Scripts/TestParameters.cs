@@ -29,9 +29,9 @@ public class TestParameters : MonoBehaviour
         MarlonsLegitLogger.Instance.FileLocation = loglocations;
         gestureManager.LoadDatabase();
         CheckSet(3, 3, "rightPositions");
-        CheckSet(6, 6, "righttransform");
-        CheckSet(6, 33, "rightLeftPositions");
-        CheckSet(12, 66, "rightLeftTransforms");
+        //CheckSet(6, 6, "righttransform");
+        //CheckSet(6, 33, "rightLeftPositions");
+        //CheckSet(12, 66, "rightLeftTransforms");
     }
 
     void CheckSet(int numValues, int valuesUsed, string name)
@@ -39,12 +39,12 @@ public class TestParameters : MonoBehaviour
         MarlonsLegitLogger.Instance.FileName = name;
         MarlonsLegitLogger.Instance.CreateStream();
         List<Gesture> tempGestures = new List<Gesture>();
-        for (int i = 3; i < 21; i++)
+        for (int i = 3; i < 12; i+=3)
         {
             float globalCorrect = 0;
             float globalWrong = 0;
             MarlonsLegitLogger.Instance.SubHeading(i.ToString());
-            gestureManager.LearnGesture(numValues, i);
+            gestureManager.LearnGesture(numValues, valuesUsed, i);
             for (int j = 0; j < gestures.Length; j++)
             {
                 float correct = 0;
@@ -53,16 +53,17 @@ public class TestParameters : MonoBehaviour
                 for (int k = 0; k < tempGestures.Count; k++)
                 {
                     string str = gestureManager.CheckRecognized(tempGestures[k].points, valuesUsed);
-                    //MarlonsLegitLogger.Instance.Log(" [Acctual]: " + gestures[j] + "[Predicted]: " + str);
+                    MarlonsLegitLogger.Instance.Log(" [Acctual]: " + gestures[j] + "[Predicted]: " + str);
                     if (gestures[j] == str)
                     { correct++; }
                     else { wrong++; }
                 }
-                MarlonsLegitLogger.Instance.Log("[Correct]: " + correct + "[Wrong]: " + wrong + "[Accuracy]: " + (correct / (correct+wrong)));
+                MarlonsLegitLogger.Instance.Log("[" + j + "]--" + "[Correct]: " + correct + "[Wrong]: " + wrong + "[Accuracy]: " + (correct / (correct + wrong)));
                 globalCorrect += correct;
                 globalWrong += wrong;
             }
-            MarlonsLegitLogger.Instance.Log("[Total Correct]: " + globalCorrect + "[Total Wrong]: " + globalWrong + "[Accuracy]: " + (globalCorrect / (globalCorrect+globalWrong)));
+            MarlonsLegitLogger.Instance.Log("[Total Correct]: " + globalCorrect + "[Total Wrong]: " + globalWrong + "[Accuracy]: " + (globalCorrect / (globalCorrect + globalWrong)));
         }
+        MarlonsLegitLogger.Instance.CloseStream();
     }
 }

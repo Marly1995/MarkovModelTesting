@@ -82,10 +82,10 @@ public class MousePositionRecorder : MonoBehaviour
     {
         if (_isRecording)
         {
-            rightHandPositions.Add(rightHand.position);
-            leftHandPositions.Add(leftHand.position);
-            rightHandRotations.Add(rightHand.rotation.eulerAngles);
-            leftHandRotations.Add(leftHand.rotation.eulerAngles);
+            rightHandPositions.Add(rightHand.localPosition);
+            leftHandPositions.Add(leftHand.localPosition);
+            rightHandRotations.Add(rightHand.localRotation.eulerAngles);
+            leftHandRotations.Add(leftHand.localRotation.eulerAngles);
             index++;
         }
 	}
@@ -94,6 +94,9 @@ public class MousePositionRecorder : MonoBehaviour
     {
         Debug.Log("Recording Begun!");
         rightHandPositions.Clear();
+        leftHandPositions.Clear();
+        rightHandRotations.Clear();
+        leftHandRotations.Clear();
         _isRecording = true;
         index = 0;
         leftTrail.StartTrailing();
@@ -205,25 +208,48 @@ public class MousePositionRecorder : MonoBehaviour
         Debug.Log("Sequence Learned!");
     }
 
-    public void LearnGesture(int valuesUsed, int statesUsed)
+    public void LearnGesture(int valuesUsed,int modeUsed, int statesUsed)
     {
         double[][][] inputs = new double[storedGestures.Count][][];
         int[] outputs = new int[storedGestures.Count];
 
         for (int i = 0; i < inputs.Length; i++)
         {
-            double[][] atemp = new double[storedGestures[i].points.Length][];
-            for (int j = 0; j < storedGestures[i].points.Length; j++)
+            double[][] points = new double[storedGestures[i].points.Length][];
+            switch (modeUsed)
             {
-                double[] btemp = new double[valuesUsed];
-                for (int k = 0; k < valuesUsed; k++)
-                {
-                    btemp[k] = storedGestures[i].points[j][k];
-                }
-                atemp[j] = btemp;
+                case 3:
+                    for (int j = 0; j < storedGestures[i].points.Length; j++)
+                    {
+                        points[j] = new double[3] { storedGestures[i].points[j][0], storedGestures[i].points[j][1], storedGestures[i].points[j][2] };
+                    }
+                    break;
+                case 33:
+                    for (int j = 0; j < storedGestures[i].points.Length; j++)
+                    {
+                        points[j] = new double[6] { storedGestures[i].points[j][0], storedGestures[i].points[j][1], storedGestures[i].points[j][2],
+                                                storedGestures[i].points[j][6], storedGestures[i].points[j][7], storedGestures[i].points[j][8] };
+                    }
+                    break;
+                case 6:
+                    for (int j = 0; j < storedGestures[i].points.Length; j++)
+                    {
+                        points[j] = new double[6] { storedGestures[i].points[j][0], storedGestures[i].points[j][1], storedGestures[i].points[j][2],
+                                                storedGestures[i].points[j][3], storedGestures[i].points[j][4], storedGestures[i].points[j][5] };
+                    }
+                    break;
+                case 66:
+                    for (int j = 0; j < storedGestures[i].points.Length; j++)
+                    {
+                        points[j] = new double[12] { storedGestures[i].points[j][0], storedGestures[i].points[j][1], storedGestures[i].points[j][2],
+                                                 storedGestures[i].points[j][3], storedGestures[i].points[j][4], storedGestures[i].points[j][5],
+                                                 storedGestures[i].points[j][6], storedGestures[i].points[j][7], storedGestures[i].points[j][8],
+                                                 storedGestures[i].points[j][9], storedGestures[i].points[j][10], storedGestures[i].points[j][11] };
+                    }
+                    break;
             }
 
-            inputs[i] = atemp;
+            inputs[i] = points;
             outputs[i] = storedGestures[i].index;
         }
 
@@ -241,7 +267,7 @@ public class MousePositionRecorder : MonoBehaviour
             Learner = i => new BaumWelchLearning<MultivariateNormalDistribution, double[]>(hmm.Models[i])
             {
                 Tolerance = 0.01,
-                MaxIterations = 1,
+                MaxIterations = 0,
 
                 FittingOptions = new NormalOptions()
                 {
@@ -378,9 +404,16 @@ public class MousePositionRecorder : MonoBehaviour
         database.Load(stream);
         storedGestures = database.Gestures.ToList();
         gestureIndex = new Dictionary<string, int>();
-        for (int i = 0; i < storedGestures.Count; i++)
+        if (storedGestures.Count > 0)
         {
-            gestureIndex[storedGestures[i].name] = storedGestures[i].index;
+            for (int i = 0; i < storedGestures.Count; i++)
+            {
+                gestureIndex[storedGestures[i].name] = storedGestures[i].index;
+            }
+        }
+        else
+        {
+            Debug.Log("GOT NO DATA MATE");
         }
         stream.Close();
         Debug.Log("Gesture Database Loaded!");
