@@ -30,8 +30,8 @@ public class TestParameters : MonoBehaviour
         gestureManager.LoadDatabase();
         CheckSet(3, 3, "rightPositions");
         CheckSet(6, 6, "righttransform");
-        //CheckSet(6, 33, "rightLeftPositions");
-        //CheckSet(12, 66, "rightLeftTransforms");
+        CheckSet(6, 33, "rightLeftPositions");
+        CheckSet(12, 66, "rightLeftTransforms");
     }
 
     void CheckSet(int numValues, int valuesUsed, string name)
@@ -39,7 +39,7 @@ public class TestParameters : MonoBehaviour
         MarlonsLegitLogger.Instance.FileName = name;
         MarlonsLegitLogger.Instance.CreateStream();
         List<Gesture> tempGestures = new List<Gesture>();
-        for (int i = 8; i < 12; i++)
+        for (int i = 3; i < 21; i++)
         {
             float globalCorrect = 0;
             float globalWrong = 0;
