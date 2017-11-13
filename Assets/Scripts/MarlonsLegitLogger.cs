@@ -84,4 +84,10 @@ public class MarlonsLegitLogger
         if (fileLocation != null && fileName != null)
         { stream = new StreamWriter(fileLocation + fileName); }
     }
+
+    public void CloseStream()
+    {
+        if (stream != null)
+        { stream.Close(); }
+    }
 }
