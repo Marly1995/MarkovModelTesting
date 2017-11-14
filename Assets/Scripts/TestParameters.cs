@@ -29,7 +29,7 @@ public class TestParameters : MonoBehaviour
         MarlonsLegitLogger.Instance.FileLocation = loglocations;
         gestureManager.LoadDatabase();
         CheckSet(3, 3, "rightPositions");
-        CheckSet(6, 6, "righttransform");
+        //CheckSet(6, 6, "righttransform");
         //CheckSet(6, 33, "rightLeftPositions");
         //CheckSet(12, 66, "rightLeftTransforms");
     }
@@ -39,12 +39,12 @@ public class TestParameters : MonoBehaviour
         MarlonsLegitLogger.Instance.FileName = name;
         MarlonsLegitLogger.Instance.CreateStream();
         List<Gesture> tempGestures = new List<Gesture>();
-        for (int i = 8; i < 12; i++)
+        for (int i = 6; i < 12; i++)
         {
             float globalCorrect = 0;
             float globalWrong = 0;
             MarlonsLegitLogger.Instance.SubHeading(i.ToString());
-            gestureManager.LearnGesture(numValues, i);
+            gestureManager.LearnGesture(i);
             for (int j = 0; j < gestures.Length; j++)
             {
                 float correct = 0;
@@ -52,7 +52,7 @@ public class TestParameters : MonoBehaviour
                 tempGestures = gestureManager.LoadDatabase(testDatabaseLocations + gestures[j]);
                 for (int k = 0; k < tempGestures.Count; k++)
                 {
-                    string str = gestureManager.CheckRecognized(tempGestures[k].points, valuesUsed);
+                    string str = gestureManager.CheckRecognized(tempGestures[k].points);
                     //MarlonsLegitLogger.Instance.Log(" [Acctual]: " + gestures[j] + "[Predicted]: " + str);
                     if (gestures[j] == str)
                     { correct++; }
@@ -64,5 +64,6 @@ public class TestParameters : MonoBehaviour
             }
             MarlonsLegitLogger.Instance.Log("[Total Correct]: " + globalCorrect + "[Total Wrong]: " + globalWrong + "[Accuracy]: " + (globalCorrect / (globalCorrect+globalWrong)));
         }
+        MarlonsLegitLogger.Instance.CloseStream();
     }
 }

@@ -419,6 +419,7 @@ GameObject:
   - component: {fileID: 322053852}
   - component: {fileID: 322053858}
   - component: {fileID: 322053859}
+  - component: {fileID: 322053860}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -444,7 +445,7 @@ MonoBehaviour:
   LoadGesturesBtn: {fileID: 298788757}
   nameInputField: {fileID: 1664514952}
   text: {fileID: 2102966016}
-  databaseFile: \Documents\GitHub\MarkovModelTesting\Assets\numbersing\Assets\numbers
+  databaseFile: C:\Users\Computing\Documents\resutls\numbers
 --- !u!81 &322053853
 AudioListener:
   m_ObjectHideFlags: 0
@@ -527,24 +528,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   line: {fileID: 1860393611}
-  startWidth: 0.1
-  endWidth: 0.1
-  startColor: {r: 0, g: 1, b: 0.46206903, a: 0}
-  endColor: {r: 0, g: 0.83448267, b: 1, a: 0}
+  startWidth: 1
+  endWidth: 1
+  startColor: {r: 1, g: 0, b: 0, a: 0}
+  endColor: {r: 0, g: 1, b: 0, a: 0}
   widthCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
       value: 1
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -560,6 +561,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c69932e35bc1e3644b7766e09ff8e688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &322053860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 322053851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06a3c8d34d000348b7879fc5c72d43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gestureManager: {fileID: 322053852}
+  testDatabaseLocations: C:\Users\Computing\Documents\resutls\
+  loglocations: C:\Users\Computing\Documents\resutls\
 --- !u!1 &699274695
 GameObject:
   m_ObjectHideFlags: 0
