@@ -1,0 +1,42 @@
+//=====================================\
+       3
+\=====================================//
+[0]--[Correct]: 5[Wrong]: 5[Accuracy]: 0.5
+[1]--[Correct]: 10[Wrong]: 0[Accuracy]: 1
+[2]--[Correct]: 4[Wrong]: 6[Accuracy]: 0.4
+[3]--[Correct]: 7[Wrong]: 3[Accuracy]: 0.7
+[4]--[Correct]: 10[Wrong]: 0[Accuracy]: 1
+[5]--[Correct]: 4[Wrong]: 6[Accuracy]: 0.4
+[6]--[Correct]: 0[Wrong]: 10[Accuracy]: 0
+[7]--[Correct]: 7[Wrong]: 3[Accuracy]: 0.7
+[8]--[Correct]: 9[Wrong]: 1[Accuracy]: 0.9
+[9]--[Correct]: 6[Wrong]: 3[Accuracy]: 0.6666667
+[Total Correct]: 62[Total Wrong]: 37[Accuracy]: 0.6262626
+//=====================================\
+       6
+\=====================================//
+[0]--[Correct]: 9[Wrong]: 1[Accuracy]: 0.9
+[1]--[Correct]: 10[Wrong]: 0[Accuracy]: 1
+[2]--[Correct]: 0[Wrong]: 10[Accuracy]: 0
+[3]--[Correct]: 9[Wrong]: 1[Accuracy]: 0.9
+[4]--[Correct]: 10[Wrong]: 0[Accuracy]: 1
+[5]--[Correct]: 7[Wrong]: 3[Accuracy]: 0.7
+[6]--[Correct]: 2[Wrong]: 8[Accuracy]: 0.2
+[7]--[Correct]: 8[Wrong]: 2[Accuracy]: 0.8
+[8]--[Correct]: 9[Wrong]: 1[Accuracy]: 0.9
+[9]--[Correct]: 6[Wrong]: 3[Accuracy]: 0.6666667
+[Total Correct]: 70[Total Wrong]: 29[Accuracy]: 0.7070707
+//=====================================\
+       9
+\=====================================//
+[0]--[Correct]: 7[Wrong]: 3[Accuracy]: 0.7
+[1]--[Correct]: 10[Wrong]: 0[Accuracy]: 1
+[2]--[Correct]: 5[Wrong]: 5[Accuracy]: 0.5
+[3]--[Correct]: 7[Wrong]: 3[Accuracy]: 0.7
+[4]--[Correct]: 10[Wrong]: 0[Accuracy]: 1
+[5]--[Correct]: 7[Wrong]: 3[Accuracy]: 0.7
+[6]--[Correct]: 1[Wrong]: 9[Accuracy]: 0.1
+[7]--[Correct]: 8[Wrong]: 2[Accuracy]: 0.8
+[8]--[Correct]: 9[Wrong]: 1[Accuracy]: 0.9
+[9]--[Correct]: 7[Wrong]: 2[Accuracy]: 0.7777778
+[Total Correct]: 71[Total Wrong]: 28[Accuracy]: 0.7171717

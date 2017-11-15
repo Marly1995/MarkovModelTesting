@@ -29,7 +29,7 @@ public class TestParameters : MonoBehaviour
         MarlonsLegitLogger.Instance.FileLocation = loglocations;
         gestureManager.LoadDatabase();
         CheckSet(3, 3, "rightPositions");
-        //CheckSet(6, 6, "righttransform");
+        CheckSet(6, 6, "righttransform");
         //CheckSet(6, 33, "rightLeftPositions");
         //CheckSet(12, 66, "rightLeftTransforms");
     }
@@ -53,7 +53,7 @@ public class TestParameters : MonoBehaviour
                 for (int k = 0; k < tempGestures.Count; k++)
                 {
                     string str = gestureManager.CheckRecognized(tempGestures[k].points, valuesUsed);
-                    MarlonsLegitLogger.Instance.Log(" [Acctual]: " + gestures[j] + "[Predicted]: " + str);
+                    //MarlonsLegitLogger.Instance.Log(" [Acctual]: " + gestures[j] + "[Predicted]: " + str);
                     if (gestures[j] == str)
                     { correct++; }
                     else { wrong++; }
