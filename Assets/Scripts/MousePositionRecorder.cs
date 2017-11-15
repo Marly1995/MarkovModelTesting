@@ -78,14 +78,14 @@ public class MousePositionRecorder : MonoBehaviour
         LoadGesturesBtn.onClick.AddListener(() => LoadDatabase());
 	}
 
-	void Update ()
+	void FixedUpdate ()
     {
         if (_isRecording)
         {
             rightHandPositions.Add(rightHand.localPosition);
             leftHandPositions.Add(leftHand.localPosition);
-            rightHandRotations.Add(rightHand.localRotation.eulerAngles);
-            leftHandRotations.Add(leftHand.localRotation.eulerAngles);
+            rightHandRotations.Add(rightHand.localEulerAngles);
+            leftHandRotations.Add(leftHand.localEulerAngles);
             index++;
         }
 	}
